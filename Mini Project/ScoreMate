@@ -1,0 +1,199 @@
+scores = [61, 45, 90, 89, 53, 77]
+
+def display_scores():
+    if not scores:
+        print("\nNo scores available.")
+        return
+
+    print("\nCurrent Scores:")
+    for i, score in enumerate(scores, start=1):
+        print(f"Student {i}: {score}")
+
+def add_score():
+    while True:
+        try:
+            score = int(input("Enter the new score (0-100): "))
+
+            if 0 <= score <= 100:
+                scores.append(score)
+                print("Score added successfully!")
+                break
+            else:
+                print("Please enter a score between 0 and 100.")
+
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+
+def remove_score():
+    if not scores:
+        print("\nNo scores available to remove.")
+        return
+
+    try:
+        score = int(input("Enter the score you want to remove: "))
+
+        if score in scores:
+            scores.remove(score)
+            print(f"Score {score} removed successfully.")
+        else:
+            print("Score not found.")
+
+    except ValueError:
+        print("Invalid input. Please enter a number.")
+
+def highest_score():
+    if not scores:
+        print("\nNo scores available.")
+        return
+
+    print(f"\nHighest Score: {max(scores)}")
+
+def lowest_score():
+    if not scores:
+        print("\nNo scores available.")
+        return
+
+    print(f"\nLowest Score: {min(scores)}")
+
+def calculate_total():
+    if not scores:
+        print("\nNo scores available.")
+        return
+
+    total = sum(scores)
+    print(f"\nTotal Score: {total}")
+
+def calculate_average():
+    if not scores:
+        print("\nNo scores available.")
+        return
+
+    average = sum(scores) / len(scores)
+    print(f"\nAverage Score: {average:.2f}")
+
+
+def sort_scores():
+    if not scores:
+        print("\nNo scores available.")
+        return
+
+    scores.sort()
+
+    print("\nScores sorted in ascending order:")
+    print(scores)
+
+
+def count_above_50():
+    if not scores:
+        print("\nNo scores available.")
+        return
+
+    count = 0
+
+    for score in scores:
+        if score > 50:
+            count += 1
+
+    print(f"\nNumber of students scoring above 50: {count}")
+
+
+def score_summary():
+    if not scores:
+        print("\nNo scores available.")
+        return
+
+    total = sum(scores)
+    average = total / len(scores)
+    highest = max(scores)
+    lowest = min(scores)
+
+    above_50 = 0
+
+    for score in scores:
+        if score > 50:
+            above_50 += 1
+
+    below_or_equal_50 = len(scores) - above_50
+
+    print("\n" + "=" * 40)
+    print("          SCORE SUMMARY")
+    print("=" * 40)
+
+    print(f"Total Students       : {len(scores)}")
+    print(f"Highest Score        : {highest}")
+    print(f"Lowest Score         : {lowest}")
+    print(f"Total Marks          : {total}")
+    print(f"Average Score        : {average:.2f}")
+    print(f"Scored Above 50      : {above_50}")
+    print(f"Scored 50 or Below   : {below_or_equal_50}")
+    print("=" * 40)
+
+def reset_scores():
+    global scores
+
+    scores = [61, 45, 90, 89, 53, 77]
+    print("\nScores have been reset to the original list.")
+
+
+while True:
+   
+    print("ScoreMate: STUDENT SCORE ANALYZER")
+    print("=" * 45)
+
+    print("1.  Display all scores")
+    print("2.  Add a new score")
+    print("3.  Remove a score")
+    print("4.  Find highest score")
+    print("5.  Find lowest score")
+    print("6.  Calculate total")
+    print("7.  Calculate average")
+    print("8.  Sort the scores")
+    print("9.  Count students above 50")
+    print("10. Display score summary")
+    print("11. Reset scores")
+    print("0.  Exit")
+
+    print("=" * 45)
+
+    choice = input("Enter your choice: ")
+
+    if choice == "1":
+        display_scores()
+
+    elif choice == "2":
+        add_score()
+
+    elif choice == "3":
+        remove_score()
+
+    elif choice == "4":
+        highest_score()
+
+    elif choice == "5":
+        lowest_score()
+
+    elif choice == "6":
+        calculate_total()
+
+    elif choice == "7":
+        calculate_average()
+
+    elif choice == "8":
+        sort_scores()
+
+    elif choice == "9":
+        count_above_50()
+
+    elif choice == "10":
+        score_summary()
+
+    elif choice == "11":
+        reset_scores()
+
+    elif choice == "0":
+        print("\nThank you for using ScoreMate!")
+        print("Keep learning and keep building! 🚀")
+        break
+
+    else:
+        print("\nInvalid choice. Please select a valid option.")
