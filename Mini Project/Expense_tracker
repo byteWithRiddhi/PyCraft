@@ -1,0 +1,252 @@
+import json
+import os
+from datetime import datetime
+
+FILE_NAME = "expenses.json"
+
+def load_expenses():
+    if os.path.exists(FILE_NAME):
+        try:
+            with open(FILE_NAME, "r") as file:
+                return json.load(file)
+        except (json.JSONDecodeError, FileNotFoundError):
+            return []
+
+    return []
+
+def save_expenses(expenses):
+    with open(FILE_NAME, "w") as file:
+        json.dump(expenses, file, indent=4)
+
+def add_expense(expenses):
+
+    print("\n========== ADD EXPENSE ==========")
+
+    while True:
+        try:
+            amount = float(input("Enter amount (₹): "))
+
+            if amount <= 0:
+                print("Amount must be greater than 0.")
+                continue
+
+            break
+
+        except ValueError:
+            print("Invalid amount. Please enter a number.")
+
+    category = input("Enter category: ").strip()
+
+    while not category:
+        print("Category cannot be empty.")
+        category = input("Enter category: ").strip()
+
+    description = input("Enter description: ").strip()
+
+    date = input(
+        "Enter date (DD-MM-YYYY) or press Enter for today's date: "
+    ).strip()
+
+    if not date:
+        date = datetime.now().strftime("%d-%m-%Y")
+    else:
+        try:
+            datetime.strptime(date, "%d-%m-%Y")
+        except ValueError:
+            print("Invalid date format. Today's date will be used.")
+            date = datetime.now().strftime("%d-%m-%Y")
+
+    expense = {
+        "amount": amount,
+        "category": category,
+        "description": description,
+        "date": date
+    }
+
+    expenses.append(expense)
+    save_expenses(expenses)
+
+    print("\nExpense added successfully! ✓")
+
+def view_expenses(expenses):
+
+    print("\n========== ALL EXPENSES ==========")
+
+    if not expenses:
+        print("No expenses found.")
+        return
+
+    for index, expense in enumerate(expenses, start=1):
+
+        print(f"\nExpense #{index}")
+        print("-" * 35)
+        print(f"Amount      : ₹{expense['amount']:.2f}")
+        print(f"Category    : {expense['category']}")
+        print(f"Description : {expense['description']}")
+        print(f"Date        : {expense['date']}")
+
+    print("\n" + "=" * 35)
+
+def search_by_category(expenses):
+
+    print("\n========== SEARCH EXPENSES ==========")
+
+    if not expenses:
+        print("No expenses found.")
+        return
+
+    category = input("Enter category to search: ").strip().lower()
+
+    found = False
+
+    for index, expense in enumerate(expenses, start=1):
+
+        if expense["category"].lower() == category:
+
+            print("\nExpense #", index)
+            print(f"Amount      : ₹{expense['amount']:.2f}")
+            print(f"Category    : {expense['category']}")
+            print(f"Description : {expense['description']}")
+            print(f"Date        : {expense['date']}")
+
+            found = True
+
+    if not found:
+        print(f"No expenses found in category '{category}'.")
+
+def total_spending(expenses):
+
+    print("\n========== TOTAL SPENDING ==========")
+
+    if not expenses:
+        print("No expenses available.")
+        return
+
+    total = sum(expense["amount"] for expense in expenses)
+
+    print(f"Total Spending: ₹{total:.2f}")
+
+def category_summary(expenses):
+
+    print("\n========== CATEGORY SUMMARY ==========")
+
+    if not expenses:
+        print("No expenses available.")
+        return
+
+    summary = {}
+
+    for expense in expenses:
+
+        category = expense["category"]
+        amount = expense["amount"]
+
+        if category in summary:
+            summary[category] += amount
+        else:
+            summary[category] = amount
+
+    total = sum(summary.values())
+
+    for category, amount in summary.items():
+
+        percentage = (amount / total) * 100
+
+        print(
+            f"{category:<15} "
+            f"₹{amount:>10.2f} "
+            f"({percentage:.1f}%)"
+        )
+
+    print("-" * 40)
+    print(f"{'Total':<15} ₹{total:>10.2f}")
+
+
+def delete_expense(expenses):
+
+    print("\n========== DELETE EXPENSE ==========")
+
+    if not expenses:
+        print("No expenses available.")
+        return
+
+    view_expenses(expenses)
+
+    while True:
+
+        try:
+            number = int(
+                input("\nEnter expense number to delete (0 to cancel): ")
+            )
+
+            if number == 0:
+                print("Delete operation cancelled.")
+                return
+
+            if 1 <= number <= len(expenses):
+                break
+
+            print("Please enter a valid expense number.")
+
+        except ValueError:
+            print("Please enter a number.")
+
+    deleted_expense = expenses.pop(number - 1)
+
+    save_expenses(expenses)
+
+    print(
+        f"\nExpense of ₹{deleted_expense['amount']:.2f} "
+        "deleted successfully! ✓"
+    )
+
+def main():
+    expenses = load_expenses()
+
+    while True:
+
+        print("\n")
+        print("=" * 45)
+        print("          EXPENSE TRACKER")
+        print("=" * 45)
+
+        print("1. Add Expense")
+        print("2. View All Expenses")
+        print("3. Search by Category")
+        print("4. Total Spending")
+        print("5. Category Summary")
+        print("6. Delete Expense")
+        print("0. Exit")
+
+        print("=" * 45)
+
+        choice = input("Enter your choice: ").strip()
+
+        if choice == "1":
+            add_expense(expenses)
+
+        elif choice == "2":
+            view_expenses(expenses)
+
+        elif choice == "3":
+            search_by_category(expenses)
+
+        elif choice == "4":
+            total_spending(expenses)
+
+        elif choice == "5":
+            category_summary(expenses)
+
+        elif choice == "6":
+            delete_expense(expenses)
+
+        elif choice == "0":
+            print("\nThank you for using ExpenseTracker! 💰")
+            print("Keep tracking, keep saving! 🚀")
+            break
+
+        else:
+            print("\nInvalid choice. Please select a valid option.")
+
+if __name__ == "__main__":
+    main()
